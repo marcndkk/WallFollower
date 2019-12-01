@@ -8,38 +8,47 @@ class Server:
         self.port = port
 
     def listen(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        server_address = (host, port)
-        print('starting up on {} port {}'.format(*server_address))
+        server_address = (self.host, self.port)
         sock.bind(server_address)
 
         sock.listen(1)
 
-        while True:
-            print('waiting for a connection')
-            connection, client_address = sock.accept()
-            try:
-                while True:
+        print("Listening on port {}".format(self.port))
+
+        try:
+            while True:
+                connection, client_address = sock.accept()
+                try:
                     command = connection.recv(4096)
-                    if data:
-                        print("Recevied command: {}".format(command))
-                        result = self._dispatch(command)
+                    if command:
+                        command = self._strip_command(command)
+                        print("Received command: {}".format(command))
+                        result = str(self._dispatch(command))
                         if result:
-                            connection.sendall(result)
-            finally:
-                connection.close()
+                            connection.sendall(result.encode("utf-8"))
+                finally:
+                    connection.close()
+        except KeyboardInterrupt:
+            sock.shutdown(socket.SHUT_RDWR)
+            sock.close()
+
+    def _strip_command(self, command):
+        command = command.decode("utf-8")
+        command = command.rstrip()
+        return command
 
     def _dispatch(self, command):
         if command == "start":
-            robot_controller.start()
+            self.robot_controller.start()
             return "starting"
         elif command == "stop":
-            robot_controller.stop()
+            self.robot_controller.stop()
             return "stopping"
         elif command == "getdist":
-            return robot_controller.get_dist()
+            return self.robot_controller.get_dist()
         elif command == "getmotors":
-            return robot_controller.get_motors()
+            return self.robot_controller.get_motors()
         else:
             return "unknown command"
