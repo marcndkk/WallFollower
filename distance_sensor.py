@@ -6,3 +6,6 @@ class Sonar:
 
     def get_distance(self):
         return self.sensor.distance * 100
+
+    def stop(self):
+        self.sensor.close()
