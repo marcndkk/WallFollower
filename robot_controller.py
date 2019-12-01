@@ -46,7 +46,12 @@ class RobotController:
         return "stopping"
 
     def get_dist(self):
-        return self.distance_sensor.get_distance()
+        distances = []
+        for i in range(0,3):
+            distances.append(self.distance_sensor.get_distance())
+            time.sleep(0.01)
+        mean = sum(distances)/len(distances)
+        return mean
 
     def get_motors(self):
         return self.motor_controller.get_values()
