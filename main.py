@@ -1,6 +1,6 @@
 from server import Server
 from robot_controller import RobotController
-from distance_sensor import Sonar
+from distance_sensor2 import Sonar
 from motor_controller import MotorController
 
 def main():
