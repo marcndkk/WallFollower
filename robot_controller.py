@@ -9,9 +9,8 @@ class RobotController:
         self.thread = None
         self.running = False 
 
-        self.speed = 0.2
+        self.speed = 0.3
         self.target_distance = 13
-        self.multiplier = 0.1
 
     def start(self):
         if not self.running and (self.thread == None or (not self.thread.isAlive())):
@@ -23,15 +22,24 @@ class RobotController:
     def _run(self):
         while self.running:
             distance = self.get_dist()
-            diff = (self.target_distance - distance) * self.multiplier
-            if diff > 0.03:
-                diff = 0.03
-            if diff < -0.03:
-                diff = -0.03
-            self.motor_controller.set_values(self.speed - diff, self.speed + diff)
-            time.sleep(0.1)
+            correction = self._get_correction()
+            self.motor_controller.set_values(self.speed - correction, self.speed + correction)
         # When stopped
         self.motor_controller.set_values(0, 0)
+
+    def _get_correction(self):
+        distance1 = self.get_dist()
+        time.sleep(0.1)
+        distance2 = self.get_dist()
+        direction = distance1 - distance2
+        diff = self.target_distance - distance2
+        if ((diff > 0) and (direction > 0)) or ((diff < 0) and (direction < 0)):
+            correction = 0.5 * direction / 10
+        elif (diff < 0):
+            correction = 0.2 * diff / 100
+        else:
+            correction = 0.2 * diff / 10
+        return correction
 
     def stop(self):
         self.running = False
