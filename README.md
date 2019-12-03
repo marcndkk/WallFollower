@@ -14,13 +14,13 @@ The RobotController is running in its own thread, in order to not block the serv
 ## Scripts and systemd services
 We have automated the startup process of the Pi with the following scripts and systemd services:
 - The Pi connects automatically to an ad-hoc network called "pibot", using [connect-pibot.sh](scripts/connect-pibot.sh), which is executed at startup by [connect-pibot.service](scripts/connect-pibot.service).
-- The pigpio daemon is started automatically by a systemd services provided by the pigpio author.
+- The pigpio daemon is started automatically by a systemd service provided by the pigpio author.
 - The robot software is started by [wall-follower.service](scripts/wall-follower.service)
 
 ## To connect to server
 When the robot has been turned on, you can connect to it by following these steps:
 1. Possibly stop the network manager, which can be done with: sudo service network-manager stop
 2. Connect to the pibot network. This can be done with an adapted version (changing the static ip address to something else) of [connect-pibot.sh](scripts/connect-pibot.sh).
-3. You can now control the robot by sending commands over TCP, either get_dist, get_motors, start or stop. You can either:
+3. You can now control the robot by sending commands over TCP, either getdist, getmotors, start or stop. You can either:
     1. Use socat: echo start | socat 192.168.99.11:8080 -
     2. or use [commander.sh](scripts/commander.sh) to easily start and stop the robot.  
