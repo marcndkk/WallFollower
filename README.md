@@ -5,7 +5,7 @@ Project from a class in Embedded Linux on University of Southern Denmark, using 
 
 The wall following robot works by running the [main](main.py) file which instantiates following classes: 
 - A [MotorController](motor_controller.py) object used to steer the robot extending the CamJamKitRobot library by validating the given input. 
-- A [Sonar](distance_sensor.py) object is instantiated with pins 17 and 18 used to get the distance to an object in its range. 
+- A [Sonar](distance_sensor.py) object is instantiated with pins 17 and 18 used to get the distance to an object in its range. The Sonar class uses the [pigpio](http://abyz.me.uk/rpi/pigpio/python.html) library to communicate with the [pigpio daemon](http://abyz.me.uk/rpi/pigpio/pigpiod.html). 
 - A [RobotController](robot_controller.py) object is then instantiated with that sonar and MotorController object, providing the start, stop, get_dist and get_motors functions.
 - Lastly a [Server](server.py) object is instantiated running on its local ip address: 192.168.99.11 with port 8080. The server listens for incoming commands in the form of start, stop, getdist or getmotors, which is then dispatched to the RobotController object, that responds accordingly.
 
