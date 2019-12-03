@@ -23,4 +23,4 @@ When the robot has been turned on, you can connect to it by following these step
 2. Connect to the pibot network. This can be done with an adapted version (changing the static ip address to something else) of [connect-pibot.sh](scripts/connect-pibot.sh).
 3. You can now control the robot by sending commands over TCP, either getdist, getmotors, start or stop. You can either:
     1. Use socat: echo start | socat 192.168.99.11:8080 -
-    2. or use [commander.sh](scripts/commander.sh) to easily start and stop the robot.  
+    2. or use [commander.bash](scripts/commander.bash) to easily start and stop the robot.  
