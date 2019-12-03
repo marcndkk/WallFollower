@@ -1,0 +1,9 @@
+[Unit]
+Description=Connect to Ad-Hoc network pibot
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /usr/bin/connect-pibot.sh
+
+[Install]
+WantedBy=multi-user.target

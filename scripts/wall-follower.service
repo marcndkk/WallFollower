@@ -1,0 +1,11 @@
+[Unit]
+Description=Start wall-follower robot service
+After=connect-pibot.service
+Requires=pigpiod.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/mndkk/portfolio2/WallFollower/main.py
+
+[Install]
+WantedBy=multi-user.target
