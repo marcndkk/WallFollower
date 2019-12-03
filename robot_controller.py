@@ -9,36 +9,52 @@ class RobotController:
         self.thread = None
         self.running = False 
 
-        self.speed = 0.3
-        self.target_distance = 13
+        self.speed = 0.35
+        self.target_distance = 20
 
     def start(self):
         if not self.running and (self.thread == None or (not self.thread.isAlive())):
             self.running = True
+            self.state = 1
             self.thread = threading.Thread(target=self._run)
             self.thread.start()
         return "starting"
 
     def _run(self):
         while self.running:
-            distance = self.get_dist()
-            correction = self._get_correction()
-            self.motor_controller.set_values(self.speed - correction, self.speed + correction)
+            if self.state == 1:
+                dist = self.get_dist()
+                self.motor_controller.set_values(-0.35, 0.35)
+                while dist > 50:
+                    time.sleep(0.15)
+                    dist = self.get_dist()
+                self.motor_controller.set_values(0, 0)
+                self.state = 2
+                print("STATE 2")
+            elif self.state == 2:
+                correction = self._get_correction()
+                self.motor_controller.set_values(self.speed - correction, self.speed + correction)
         # When stopped
         self.motor_controller.set_values(0, 0)
 
-    def _get_correction(self):
+    def _get_direction_and_distance(self):
         distance1 = self.get_dist()
         time.sleep(0.1)
         distance2 = self.get_dist()
-        direction = distance1 - distance2
-        diff = self.target_distance - distance2
-        if ((diff > 0) and (direction > 0)) or ((diff < 0) and (direction < 0)):
-            correction = 0.5 * direction / 10
-        elif (diff < 0):
-            correction = 0.2 * diff / 100
+        direction =  distance1 - distance2
+        deviation = self.target_distance - distance2
+        return direction, deviation
+
+    def _get_correction(self):
+        direction, deviation = self._get_direction_and_distance()
+        if direction > 0 and deviation < 0:
+            correction = 0
+        elif direction < 0 and deviation < 0:
+            correction = -0.1
+        elif direction > 0 and deviation > 0:
+            correction = direction * 0.15
         else:
-            correction = 0.2 * diff / 10
+            correction = 0
         return correction
 
     def stop(self):

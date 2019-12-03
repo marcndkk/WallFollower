@@ -17,7 +17,7 @@ class MotorController:
     def _validate_value(self, value):
         if value > 1:
             return 1
-        elif value < 0:
-            return 0
+        elif value < -1:
+            return -1
         else:
             return value

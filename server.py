@@ -9,6 +9,7 @@ class Server:
 
     def listen(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         server_address = (self.host, self.port)
         sock.bind(server_address)
